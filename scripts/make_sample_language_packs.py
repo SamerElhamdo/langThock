@@ -74,8 +74,8 @@ def make_pack(root, name, key, base, switch):
         "license": {"type": "CC0", "url": "https://creativecommons.org/publicdomain/zero/1.0/"},
         "sounds": sounds,
     }
-    with open(os.path.join(folder, "config.json"), "w") as f:
-        json.dump(config, f, indent=2)
+    with open(os.path.join(folder, "config.json"), "w", encoding="utf-8") as f:
+        json.dump(config, f, indent=2, ensure_ascii=False)
     write_wav(os.path.join(folder, f"{prefix}-switch.wav"), chirp(*switch))
     return folder
 

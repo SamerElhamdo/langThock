@@ -27,6 +27,7 @@ struct LanguageSettingsView: View {
             .padding([.leading, .trailing, .bottom], 20)
         }
         .ignoresSafeArea(edges: .top)
+        .environment(\.layoutDirection, LangL10n.isRightToLeft ? .rightToLeft : .leftToRight)
         .onReceive(NotificationCenter.default.publisher(for: .languageSoundConfigurationDidChange)) { _ in
             config = store.configuration
         }
@@ -81,7 +82,7 @@ struct LanguageSettingsView: View {
         )
         return Picker("", selection: selection) {
             ForEach(config.profiles) { profile in
-                Text(profile.name).tag(profile.id)
+                Text(profile.displayName).tag(profile.id)
             }
         }
         .pickerStyle(.menu)
@@ -116,7 +117,7 @@ struct LanguageSettingsView: View {
         return VStack(spacing: 0) {
             HStack {
                 if profile.isBuiltIn {
-                    Text(profile.name).font(.system(size: 13, weight: .medium))
+                    Text(profile.displayName).font(.system(size: 13, weight: .medium))
                 } else {
                     TextField("", text: nameBinding).textFieldStyle(.roundedBorder).frame(width: 160)
                 }
@@ -174,7 +175,7 @@ struct LanguageSettingsView: View {
             
             ForEach(config.profiles) { profile in
                 SettingsRowView(
-                    title: "\(profile.name) switch sound",
+                    title: LangL10n.switchSound(for: profile.displayName),
                     subtitle: config.switchSoundPaths[profile.id].map { URL(fileURLWithPath: $0).lastPathComponent } ?? LangL10n.none,
                     control: AnyView(
                         HStack {
@@ -217,7 +218,7 @@ struct LanguageSettingsView: View {
     private func addProfile() {
         store.update { cfg in
             let n = cfg.profiles.filter { !$0.isBuiltIn }.count + 1
-            cfg.profiles.append(SoundProfile(id: "custom-\(UUID().uuidString)", name: "Custom \(n)", soundpackId: nil, isBuiltIn: false))
+            cfg.profiles.append(SoundProfile(id: "custom-\(UUID().uuidString)", name: LangL10n.customProfileName(n), soundpackId: nil, isBuiltIn: false))
         }
     }
     

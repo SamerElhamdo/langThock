@@ -74,6 +74,7 @@ struct SettingsView: View {
             }
         }
         .id(refreshID)
+        .environment(\.layoutDirection, LangL10n.isRightToLeft ? .rightToLeft : .leftToRight)
         .frame(minWidth: 715, maxWidth: 715, minHeight: 470, maxHeight: .infinity)
         .toolbar {
             ToolbarItem(placement: .automatic) {

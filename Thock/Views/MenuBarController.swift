@@ -123,6 +123,7 @@ class MenuBarController {
     
     func setupMenu() {
         menu.removeAllItems()
+        menu.userInterfaceLayoutDirection = LangL10n.isRightToLeft ? .rightToLeft : .leftToRight
         updateMenuBarIcon(for: AppEngine.shared.isEnabled())
         
         addToggleMenuItem()
@@ -153,7 +154,7 @@ class MenuBarController {
         inputSourceItem = sourceItem
         
         menu.addItem(createMenuLabel(LangL10n.currentSoundProfile))
-        let profileItem = NSMenuItem(title: LangL10n.status(state.profile.name), action: #selector(openSettings), keyEquivalent: "")
+        let profileItem = NSMenuItem(title: LangL10n.status(state.profile.displayName), action: #selector(openSettings), keyEquivalent: "")
         profileItem.target = self
         menu.addItem(profileItem)
         soundProfileItem = profileItem
@@ -169,7 +170,7 @@ class MenuBarController {
         DispatchQueue.main.async {
             let state = SoundProfileManager.shared.currentState
             self.inputSourceItem?.title = LangL10n.status(state.source?.name)
-            self.soundProfileItem?.title = LangL10n.status(state.profile.name)
+            self.soundProfileItem?.title = LangL10n.status(state.profile.displayName)
         }
     }
     
@@ -363,6 +364,7 @@ class MenuBarController {
         label.font = NSFont.systemFont(ofSize: 11)
         label.textColor = NSColor.disabledControlTextColor
         label.frame = NSRect(x: 12, y: 2, width: 140, height: 16)
+        label.alignment = LangL10n.isRightToLeft ? .right : .left
         if let tooltip = tooltip {
             label.stringValue += " 􀁜"
             label.toolTip = tooltip

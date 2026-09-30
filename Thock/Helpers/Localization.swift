@@ -12,10 +12,12 @@ enum AppLanguage: String, CaseIterable {
     case vietnamese = "vi"
     case italian = "it"
     case portuguese = "pt"
+    case arabic = "ar"
     
     var displayName: String {
         switch self {
         case .english: return "English"
+        case .arabic: return "English"
         case .spanish: return "Español"
         case .french: return "Français"
         case .chinese: return "中文"
@@ -24,11 +26,13 @@ enum AppLanguage: String, CaseIterable {
         case .vietnamese: return "Tiếng Việt"
         case .italian: return "Italiano"
         case .portuguese: return "Português"
+        case .arabic: return "العربية"
         }
     }
     
     static func fromSystem() -> AppLanguage {
         guard let preferred = Locale.preferredLanguages.first else { return .english }
+        if preferred.hasPrefix("ar") { return .arabic }
         if preferred.hasPrefix("pt") { return .portuguese }
         if preferred.hasPrefix("es") { return .spanish }
         if preferred.hasPrefix("fr") { return .french }
@@ -82,6 +86,7 @@ struct L10n {
     static var general: String {
         switch lang {
         case .english: return "General"
+        case .arabic: return "عام"
         case .spanish: return "General"
         case .french: return "Général"
         case .chinese: return "通用"
@@ -96,6 +101,7 @@ struct L10n {
     static var sound: String {
         switch lang {
         case .english: return "Sound"
+        case .arabic: return "الصوت"
         case .spanish: return "Sonido"
         case .french: return "Son"
         case .chinese: return "声音"
@@ -110,6 +116,7 @@ struct L10n {
     static var shortcuts: String {
         switch lang {
         case .english: return "Shortcuts"
+        case .arabic: return "الاختصارات"
         case .spanish: return "Atajos"
         case .french: return "Raccourcis"
         case .chinese: return "快捷键"
@@ -125,6 +132,7 @@ struct L10n {
     static var system: String {
         switch lang {
         case .english: return "System"
+        case .arabic: return "النظام"
         case .spanish: return "Sistema"
         case .french: return "Système"
         case .chinese: return "系统"
@@ -139,6 +147,7 @@ struct L10n {
     static var launchAtLogin: String {
         switch lang {
         case .english: return "Launch Thock at login"
+        case .arabic: return "تشغيل Thock عند تسجيل الدخول"
         case .spanish: return "Iniciar Thock al iniciar sesión"
         case .french: return "Lancer Thock au démarrage"
         case .chinese: return "登录时启动 Thock"
@@ -153,6 +162,7 @@ struct L10n {
     static var launchAtLoginSubtitle: String {
         switch lang {
         case .english: return "Automatically start Thock when you log in"
+        case .arabic: return "تشغيل Thock تلقائياً عند تسجيل الدخول"
         case .spanish: return "Iniciar Thock automáticamente al iniciar sesión"
         case .french: return "Démarrer automatiquement Thock à l'ouverture de session"
         case .chinese: return "登录时自动启动 Thock"
@@ -167,6 +177,7 @@ struct L10n {
     static var language: String {
         switch lang {
         case .english: return "Language"
+        case .arabic: return "اللغة"
         case .spanish: return "Idioma"
         case .french: return "Langue"
         case .chinese: return "语言"
@@ -181,6 +192,7 @@ struct L10n {
     static var languageSubtitle: String {
         switch lang {
         case .english: return "Choose your preferred language"
+        case .arabic: return "اختر لغتك المفضلة"
         case .spanish: return "Elige tu idioma preferido"
         case .french: return "Choisissez votre langue préférée"
         case .chinese: return "选择您的首选语言"
@@ -196,6 +208,7 @@ struct L10n {
     static var more: String {
         switch lang {
         case .english: return "More"
+        case .arabic: return "المزيد"
         case .spanish: return "Más"
         case .french: return "Plus"
         case .chinese: return "更多"
@@ -210,6 +223,7 @@ struct L10n {
     static var aboutThisVersion: String {
         switch lang {
         case .english: return "About this version"
+        case .arabic: return "حول هذا الإصدار"
         case .spanish: return "Acerca de esta versión"
         case .french: return "À propos de cette version"
         case .chinese: return "关于此版本"
@@ -224,6 +238,7 @@ struct L10n {
     static var contribute: String {
         switch lang {
         case .english: return "Contribute"
+        case .arabic: return "ساهم في المشروع"
         case .spanish: return "Contribuir"
         case .french: return "Contribuer"
         case .chinese: return "贡献代码"
@@ -238,6 +253,7 @@ struct L10n {
     static var reportBug: String {
         switch lang {
         case .english: return "Report a bug"
+        case .arabic: return "الإبلاغ عن مشكلة"
         case .spanish: return "Informar un error"
         case .french: return "Signaler un bug"
         case .chinese: return "报告问题"
@@ -253,6 +269,7 @@ struct L10n {
     static var output: String {
         switch lang {
         case .english: return "Output"
+        case .arabic: return "الإخراج"
         case .spanish: return "Salida"
         case .french: return "Sortie"
         case .chinese: return "输出"
@@ -267,6 +284,7 @@ struct L10n {
     static var volume: String {
         switch lang {
         case .english: return "Volume"
+        case .arabic: return "مستوى الصوت"
         case .spanish: return "Volumen"
         case .french: return "Volume"
         case .chinese: return "音量"
@@ -281,6 +299,7 @@ struct L10n {
     static var playThrough: String {
         switch lang {
         case .english: return "Play sound effects through"
+        case .arabic: return "تشغيل المؤثرات الصوتية عبر"
         case .spanish: return "Reproducir efectos de sonido a través de"
         case .french: return "Lire les effets sonores via"
         case .chinese: return "播放声音效果通过"
@@ -295,6 +314,7 @@ struct L10n {
     static var systemDefault: String {
         switch lang {
         case .english: return "System Default"
+        case .arabic: return "الافتراضي للنظام"
         case .spanish: return "Predeterminado del sistema"
         case .french: return "Par défaut du système"
         case .chinese: return "系统默认"
@@ -309,6 +329,7 @@ struct L10n {
     static var filters: String {
         switch lang {
         case .english: return "Filters"
+        case .arabic: return "المرشّحات"
         case .spanish: return "Filtros"
         case .french: return "Filtres"
         case .chinese: return "过滤器"
@@ -323,6 +344,7 @@ struct L10n {
     static var disableModifierKeys: String {
         switch lang {
         case .english: return "Disable sound for modifier keys"
+        case .arabic: return "إيقاف الصوت لمفاتيح التعديل"
         case .spanish: return "Desactivar el sonido para las teclas modificadoras"
         case .french: return "Désactiver le son pour les touches de modification"
         case .chinese: return "禁用修饰键声音"
@@ -337,6 +359,7 @@ struct L10n {
     static var disableModifierKeysSubtitle: String {
         switch lang {
         case .english: return "Mute sounds when pressing modifier keys (Cmd, Shift, etc.)"
+        case .arabic: return "كتم الصوت عند الضغط على مفاتيح التعديل (Cmd وShift وغيرها)"
         case .spanish: return "Silenciar sonidos al pulsar las teclas modificadoras (Cmd, Shift, etc.)"
         case .french: return "Désactiver les sons lors de l'appui sur les touches de modification (Cmd, Shift, etc.)"
         case .chinese: return "按下修饰键时静音（Cmd、Shift 等）"
@@ -351,6 +374,7 @@ struct L10n {
     static var ignoreRapidKeys: String {
         switch lang {
         case .english: return "Ignore rapid key events"
+        case .arabic: return "تجاهل الضغطات السريعة جداً"
         case .spanish: return "Ignorar eventos rápidos de teclas"
         case .french: return "Ignorer les frappes rapides"
         case .chinese: return "忽略快速连续按键"
@@ -365,6 +389,7 @@ struct L10n {
     static var ignoreRapidKeysSubtitle: String {
         switch lang {
         case .english: return "Filter out key events that occur too quickly in succession"
+        case .arabic: return "تجاهل الضغطات المتتالية بسرعة كبيرة"
         case .spanish: return "Filtrar los eventos de teclas que ocurren en sucesión demasiado rápida"
         case .french: return "Filtrer les événements de touches qui se produisent trop rapidement"
         case .chinese: return "过滤掉过快的连续按键事件"
@@ -379,6 +404,7 @@ struct L10n {
     static var autoMute: String {
         switch lang {
         case .english: return "Auto-mute with music apps"
+        case .arabic: return "كتم تلقائي مع تطبيقات الموسيقى"
         case .spanish: return "Silencio automático con apps de música"
         case .french: return "Mise en sourdine automatique avec les apps de musique"
         case .chinese: return "音乐应用播放时自动静音"
@@ -393,6 +419,7 @@ struct L10n {
     static var autoMuteSubtitle: String {
         switch lang {
         case .english: return "Automatically mute sounds when Music, Spotify, or VLC is playing"
+        case .arabic: return "كتم الأصوات تلقائياً أثناء تشغيل Music أو Spotify أو VLC"
         case .spanish: return "Silencia automáticamente cuando Music, Spotify o VLC están reproduciendo"
         case .french: return "Désactiver automatiquement les sons lors de la lecture dans Music, Spotify ou VLC"
         case .chinese: return "当 Music、Spotify 或 VLC 播放时自动静音"
@@ -407,6 +434,7 @@ struct L10n {
     static var soundpacks: String {
         switch lang {
         case .english: return "Soundpacks"
+        case .arabic: return "حزم الأصوات"
         case .spanish: return "Paquetes de sonido"
         case .french: return "Packs de sons"
         case .chinese: return "音效包"
@@ -421,6 +449,7 @@ struct L10n {
     static var explore: String {
         switch lang {
         case .english: return "Explore"
+        case .arabic: return "استكشاف"
         case .spanish: return "Explorar"
         case .french: return "Explorer"
         case .chinese: return "探索"
@@ -435,6 +464,7 @@ struct L10n {
     static var soundpackDirectory: String {
         switch lang {
         case .english: return "Soundpack directory"
+        case .arabic: return "مجلد حزم الأصوات"
         case .spanish: return "Directorio de soundpack"
         case .french: return "Répertoire de packs de sons"
         case .chinese: return "音效包目录"
@@ -449,6 +479,7 @@ struct L10n {
     static var soundpackCreationGuide: String {
         switch lang {
         case .english: return "Soundpack creation guide"
+        case .arabic: return "دليل إنشاء حزمة أصوات"
         case .spanish: return "Guía para crear un paquete de sonido"
         case .french: return "Guide de création de pack de sons"
         case .chinese: return "音效包创建指南"
@@ -463,6 +494,7 @@ struct L10n {
     static var open: String {
         switch lang {
         case .english: return "Open"
+        case .arabic: return "فتح"
         case .spanish: return "Abrir"
         case .french: return "Ouvrir"
         case .chinese: return "打开"
@@ -477,6 +509,7 @@ struct L10n {
     static var performance: String {
         switch lang {
         case .english: return "Performance"
+        case .arabic: return "الأداء"
         case .spanish: return "Rendimiento"
         case .french: return "Performance"
         case .chinese: return "性能"
@@ -491,6 +524,7 @@ struct L10n {
     static var audioLatency: String {
         switch lang {
         case .english: return "Audio latency"
+        case .arabic: return "زمن استجابة الصوت"
         case .spanish: return "Latencia de audio"
         case .french: return "Latence audio"
         case .chinese: return "音频延迟"
@@ -505,6 +539,7 @@ struct L10n {
     static var audioLatencySubtitle: String {
         switch lang {
         case .english: return "- Ultra Low: most responsive, highest CPU usage\n- Low: very responsive, high CPU usage\n- Normal: balanced performance (recommended)\n- High: lower CPU usage, slight delay\n- Very High: lowest CPU usage, noticeable delay"
+        case .arabic: return "- منخفض جداً: أسرع استجابة، أعلى استهلاك للمعالج\n- منخفض: استجابة سريعة جداً، استهلاك مرتفع للمعالج\n- عادي: أداء متوازن (موصى به)\n- مرتفع: استهلاك أقل للمعالج مع تأخير طفيف\n- مرتفع جداً: أقل استهلاك للمعالج مع تأخير ملحوظ"
         case .spanish: return "- Ultra Bajo: máxima reactividad, mayor uso de la CPU\n- Bajo: muy reactivo, alto uso de la CPU\n- Normal: rendimiento equilibrado (recomendado)\n- Alto: menor uso de la CPU, leve retardo\n- Muy Alto: mínimo uso de la CPU, retraso notable"
         case .french: return "- Ultra faible : Réactivité maximale, utilisation CPU élevée\n- Faible : Très réactif, utilisation CPU importante\n- Normale : Performance équilibrée (recommandé)\n- Élevée : Utilisation CPU réduite, légère latence\n- Très élevée : Utilisation CPU minimale, latence notable"
         case .chinese: return "- 超低：响应最快，CPU 占用最高\n- 低：响应很快，CPU 占用较高\n- 正常：性能均衡（推荐）\n- 高：CPU 占用较低，略有延迟\n- 非常高：CPU 占用最低，延迟明显"
@@ -519,6 +554,7 @@ struct L10n {
     static var ultraLow: String {
         switch lang {
         case .english: return "Ultra Low"
+        case .arabic: return "منخفض جداً"
         case .spanish: return "Ultra Bajo"
         case .french: return "Ultra faible"
         case .chinese: return "超低"
@@ -533,6 +569,7 @@ struct L10n {
     static var low: String {
         switch lang {
         case .english: return "Low"
+        case .arabic: return "منخفض"
         case .spanish: return "Bajo"
         case .french: return "Faible"
         case .chinese: return "低"
@@ -547,6 +584,7 @@ struct L10n {
     static var normal: String {
         switch lang {
         case .english: return "Normal"
+        case .arabic: return "عادي"
         case .spanish: return "Normal"
         case .french: return "Normale"
         case .chinese: return "正常"
@@ -561,6 +599,7 @@ struct L10n {
     static var high: String {
         switch lang {
         case .english: return "High"
+        case .arabic: return "مرتفع"
         case .spanish: return "Alto"
         case .french: return "Élevée"
         case .chinese: return "高"
@@ -575,6 +614,7 @@ struct L10n {
     static var veryHigh: String {
         switch lang {
         case .english: return "Very High"
+        case .arabic: return "مرتفع جداً"
         case .spanish: return "Muy Alto"
         case .french: return "Très élevée"
         case .chinese: return "非常高"
@@ -589,6 +629,7 @@ struct L10n {
     static var reduceCPU: String {
         switch lang {
         case .english: return "Reduce CPU usage when idle"
+        case .arabic: return "تقليل استهلاك المعالج عند الخمول"
         case .spanish: return "Reducir el uso de la CPU en reposo"
         case .french: return "Réduire le CPU pendant l'inactivité"
         case .chinese: return "空闲时降低 CPU 占用"
@@ -603,6 +644,7 @@ struct L10n {
     static var reduceCPUSubtitle: String {
         switch lang {
         case .english: return "Stops audio engine after inactivity to reduce CPU usage.\nFirst sound after idle may have a tiny delay.\nSet to 'Never' to keep engine always running."
+        case .arabic: return "يوقف محرك الصوت بعد فترة من عدم النشاط لتقليل استهلاك المعالج.\nقد يتأخر أول صوت بعد الخمول قليلاً.\nاختر «أبداً» ليبقى المحرك يعمل دائماً."
         case .spanish: return "Detiene el motor de audio tras la inactividad para reducir el uso de la CPU.\nEl primer sonido tras el reposo puede tener un leve retraso.\nUsa 'Nunca' para mantener el motor siempre activo."
         case .french: return "Arrête le moteur audio après inactivité pour réduire l'utilisation du CPU.\nLe premier son après inactivité peut avoir un léger délai.\nDéfinir sur \u{00AB} Jamais \u{00BB} pour maintenir le moteur toujours actif."
         case .chinese: return "闲置后停止音频引擎以降低 CPU 占用。\n空闲后的第一个声音可能会有轻微延迟。\n设置为「从不」以保持引擎始终运行。"
@@ -617,6 +659,7 @@ struct L10n {
     static var seconds5: String {
         switch lang {
         case .english: return "5 seconds"
+        case .arabic: return "5 ثوانٍ"
         case .spanish: return "5 segundos"
         case .french: return "5 secondes"
         case .chinese: return "5 秒"
@@ -631,6 +674,7 @@ struct L10n {
     static var seconds10: String {
         switch lang {
         case .english: return "10 seconds"
+        case .arabic: return "10 ثوانٍ"
         case .spanish: return "10 segundos"
         case .french: return "10 secondes"
         case .chinese: return "10 秒"
@@ -645,6 +689,7 @@ struct L10n {
     static var seconds30: String {
         switch lang {
         case .english: return "30 seconds"
+        case .arabic: return "30 ثانية"
         case .spanish: return "30 segundos"
         case .french: return "30 secondes"
         case .chinese: return "30 秒"
@@ -659,6 +704,7 @@ struct L10n {
     static var minute1: String {
         switch lang {
         case .english: return "1 minute"
+        case .arabic: return "دقيقة واحدة"
         case .spanish: return "1 minuto"
         case .french: return "1 minute"
         case .chinese: return "1 分钟"
@@ -673,6 +719,7 @@ struct L10n {
     static var minutes5: String {
         switch lang {
         case .english: return "5 minutes"
+        case .arabic: return "5 دقائق"
         case .spanish: return "5 minutos"
         case .french: return "5 minutes"
         case .chinese: return "5 分钟"
@@ -687,6 +734,7 @@ struct L10n {
     static var never: String {
         switch lang {
         case .english: return "Never"
+        case .arabic: return "أبداً"
         case .spanish: return "Nunca"
         case .french: return "Jamais"
         case .chinese: return "从不"
@@ -701,6 +749,7 @@ struct L10n {
     static var unknownDevice: String {
         switch lang {
         case .english: return "Unknown Device (Disconnected)"
+        case .arabic: return "جهاز غير معروف (غير متصل)"
         case .spanish: return "Dispositivo desconocido (Desconectado)"
         case .french: return "Périphérique inconnu (Déconnecté)"
         case .chinese: return "未知设备（已断开）"
@@ -715,6 +764,7 @@ struct L10n {
     static var keyboard: String {
         switch lang {
         case .english: return "Keyboard"
+        case .arabic: return "لوحة المفاتيح"
         case .spanish: return "Teclado"
         case .french: return "Clavier"
         case .chinese: return "键盘"
@@ -729,6 +779,7 @@ struct L10n {
     static var mouse: String {
         switch lang {
         case .english: return "Mouse"
+        case .arabic: return "الماوس"
         case .spanish: return "Ratón"
         case .french: return "Souris"
         case .chinese: return "鼠标"
@@ -743,6 +794,7 @@ struct L10n {
     static var mouseClickSound: String {
         switch lang {
         case .english: return "Play sound for mouse clicks"
+        case .arabic: return "تشغيل صوت عند نقرات الماوس"
         case .spanish: return "Reproducir sonido para clics del ratón"
         case .french: return "Jouer un son pour les clics de souris"
         case .chinese: return "播放鼠标点击声音"
@@ -757,6 +809,7 @@ struct L10n {
     static var autoEnableOnHeadphone: String {
         switch lang {
         case .english: return "Auto-enable on headphone"
+        case .arabic: return "تفعيل تلقائي عند توصيل السماعات"
         case .spanish: return "Activar automáticamente con auriculares"
         case .french: return "Activation automatique avec casque"
         case .chinese: return "连接耳机时自动启用"
@@ -771,6 +824,7 @@ struct L10n {
     static var autoEnableOnHeadphoneSubtitle: String {
         switch lang {
         case .english: return "Automatically enable Thock when headphones are connected"
+        case .arabic: return "تفعيل Thock تلقائياً عند توصيل السماعات"
         case .spanish: return "Activa Thock automáticamente cuando se conectan auriculares"
         case .french: return "Activer automatiquement Thock lors de la connexion d'un casque audio"
         case .chinese: return "连接耳机时自动启用 Thock，断开时自动关闭"
@@ -786,6 +840,7 @@ struct L10n {
     static var global: String {
         switch lang {
         case .english: return "Global"
+        case .arabic: return "عام (على مستوى النظام)"
         case .spanish: return "Global"
         case .french: return "Global"
         case .chinese: return "全局"
@@ -800,6 +855,7 @@ struct L10n {
     static var toggleThock: String {
         switch lang {
         case .english: return "Toggle Thock"
+        case .arabic: return "تشغيل/إيقاف Thock"
         case .spanish: return "Alternar Thock"
         case .french: return "Basculer Thock"
         case .chinese: return "开关 Thock"
@@ -814,6 +870,7 @@ struct L10n {
     static var toggleThockSubtitle: String {
         switch lang {
         case .english: return "Quickly enable or disable Thock from anywhere"
+        case .arabic: return "تفعيل أو إيقاف Thock بسرعة من أي مكان"
         case .spanish: return "Activa o desactiva Thock rápidamente desde cualquier lugar"
         case .french: return "Activer ou désactiver rapidement Thock depuis n'importe où"
         case .chinese: return "从任意位置快速启用或禁用 Thock"
@@ -829,6 +886,7 @@ struct L10n {
     static var pitch: String {
         switch lang {
         case .english: return "Pitch Variation"
+        case .arabic: return "تنويع النغمة"
         case .spanish: return "Variación de tono"
         case .french: return "Variation de tonalité"
         case .chinese: return "音调变化"
@@ -843,6 +901,7 @@ struct L10n {
     static var pitchTooltip: String {
         switch lang {
         case .english: return "Each keystroke detunes itself a little - ± your chosen value. Keeps things human. Or haunted."
+        case .arabic: return "كل ضغطة تتغير نغمتها قليلاً بمقدار ± القيمة التي تختارها، ليبدو الصوت طبيعياً."
         case .spanish: return "Cada pulsación de tecla se desajusta un poco, ± el valor que elijas. Mantiene las cosas humanas. O embrujadas."
         case .french: return "Chaque frappe se désaccorde légèrement - ± la valeur choisie. Garde un petit côté humain. Ou carrément hanté."
         case .chinese: return "每次按键都会产生轻微的音调变化 - ± 您选择的值。让声音更自然，或者更诡异。"
@@ -857,6 +916,7 @@ struct L10n {
     static var quit: String {
         switch lang {
         case .english: return "Quit"
+        case .arabic: return "إنهاء"
         case .spanish: return "Salir"
         case .french: return "Quitter"
         case .chinese: return "退出"
@@ -871,6 +931,7 @@ struct L10n {
     static var version: String {
         switch lang {
         case .english: return "Version"
+        case .arabic: return "الإصدار"
         case .spanish: return "Versión"
         case .french: return "Version"
         case .chinese: return "版本"
@@ -885,6 +946,7 @@ struct L10n {
     static var quickSettings: String {
         switch lang {
         case .english: return "Quick Options..."
+        case .arabic: return "خيارات سريعة..."
         case .spanish: return "Opciones..."
         case .french: return "Options rapides..."
         case .chinese: return "快捷选项..."
@@ -899,6 +961,7 @@ struct L10n {
     static var settings: String {
         switch lang {
         case .english: return "Settings..."
+        case .arabic: return "الإعدادات..."
         case .spanish: return "Configuración..."
         case .french: return "Paramètres..."
         case .chinese: return "设置..."
@@ -913,6 +976,7 @@ struct L10n {
     static var releaseNotes: String {
         switch lang {
         case .english: return "About this version"
+        case .arabic: return "حول هذا الإصدار"
         case .spanish: return "Acerca de esta versión"
         case .french: return "À propos de cette version"
         case .chinese: return "关于此版本"
@@ -927,6 +991,7 @@ struct L10n {
     static var updateAvailable: String {
         switch lang {
         case .english: return "New Version Is Available!"
+        case .arabic: return "يتوفر إصدار جديد!"
         case .spanish: return "¡Está disponible una nueva versión!"
         case .french: return "Une nouvelle version est disponible !"
         case .chinese: return "有新版本可用！"
@@ -941,6 +1006,7 @@ struct L10n {
     static var updateNow: String {
         switch lang {
         case .english: return "↺ Update Now"
+        case .arabic: return "↺ حدّث الآن"
         case .spanish: return "↺ Actualizar ahora"
         case .french: return "↺ Mettre à jour"
         case .chinese: return "↺ 立即更新"
@@ -955,6 +1021,7 @@ struct L10n {
     static var checkForUpdates: String {
         switch lang {
         case .english: return "Check for updates..."
+        case .arabic: return "التحقق من التحديثات..."
         case .spanish: return "Buscar actualizaciones..."
         case .french: return "Vérifier les mises à jour..."
         case .chinese: return "检查更新..."
@@ -969,6 +1036,7 @@ struct L10n {
     static var updateAvailableTitle: String {
         switch lang {
         case .english: return "Update Available!"
+        case .arabic: return "يتوفر تحديث!"
         case .spanish: return "¡Actualización disponible!"
         case .french: return "Mise à jour disponible !"
         case .chinese: return "有更新可用！"
@@ -983,6 +1051,7 @@ struct L10n {
     static var updateAvailableMessage: String {
         switch lang {
         case .english: return "A new version of Thock is available. Check the menu bar for the update option."
+        case .arabic: return "يتوفر إصدار جديد من Thock. راجع شريط القائمة لخيار التحديث."
         case .spanish: return "Está disponible una nueva versión de Thock. Revisa la barra de menú para ver la opción de actualización."
         case .french: return "Une nouvelle version de Thock est disponible. Vérifiez la barre de menu pour l'option de mise à jour."
         case .chinese: return "Thock 有新版本可用。请在菜单栏中查找更新选项。"
@@ -997,6 +1066,7 @@ struct L10n {
     static var noUpdatesTitle: String {
         switch lang {
         case .english: return "No Updates Available"
+        case .arabic: return "لا توجد تحديثات"
         case .spanish: return "No hay actualizaciones disponibles"
         case .french: return "Aucune mise à jour disponible"
         case .chinese: return "没有可用的更新"
@@ -1011,6 +1081,7 @@ struct L10n {
     static var noUpdatesMessage: String {
         switch lang {
         case .english: return "You're already running the latest version of Thock."
+        case .arabic: return "أنت تستخدم أحدث إصدار من Thock."
         case .spanish: return "Ya estás usando la última versión de Thock."
         case .french: return "Vous utilisez déjà la dernière version de Thock."
         case .chinese: return "您已经在运行最新版本的 Thock。"
@@ -1025,6 +1096,7 @@ struct L10n {
     static var updateCheckFailed: String {
         switch lang {
         case .english: return "Update Check Failed"
+        case .arabic: return "فشل التحقق من التحديثات"
         case .spanish: return "Error al buscar actualizaciones"
         case .french: return "Échec de la vérification des mises à jour"
         case .chinese: return "检查更新失败"
@@ -1039,6 +1111,7 @@ struct L10n {
     static var ok: String {
         switch lang {
         case .english: return "OK"
+        case .arabic: return "حسناً"
         case .spanish: return "OK"
         case .french: return "OK"
         case .chinese: return "好"
@@ -1055,6 +1128,7 @@ struct L10n {
     static var utilities: String {
         switch lang {
         case .english: return "Utilities"
+        case .arabic: return "أدوات"
         case .spanish: return "Utilidades"
         case .french: return "Utilitaires"
         case .chinese: return "实用工具"
@@ -1069,6 +1143,7 @@ struct L10n {
     static var keyboardCleaning: String {
         switch lang {
         case .english: return "Keyboard Cleaning"
+        case .arabic: return "تنظيف لوحة المفاتيح"
         case .spanish: return "Limpieza de teclado"
         case .french: return "Nettoyage du clavier"
         case .chinese: return "键盘清洁"
@@ -1083,6 +1158,7 @@ struct L10n {
     static var blockKeyboardInput: String {
         switch lang {
         case .english: return "Block keyboard input"
+        case .arabic: return "حظر إدخال لوحة المفاتيح"
         case .spanish: return "Bloquear entrada del teclado"
         case .french: return "Bloquer les saisies clavier"
         case .chinese: return "屏蔽键盘输入"
@@ -1097,6 +1173,7 @@ struct L10n {
     static var keyboardCleaningSubtitle: String {
         switch lang {
         case .english: return "Blocks all keyboard input so you can clean your keys without triggering any actions"
+        case .arabic: return "يحظر كل إدخال من لوحة المفاتيح لتتمكن من تنظيفها دون تنفيذ أي إجراء"
         case .spanish: return "Bloquea toda la entrada del teclado para que puedas limpiar las teclas sin activar acciones"
         case .french: return "Bloque toutes les saisies clavier pour nettoyer vos touches sans déclencher d'actions"
         case .chinese: return "屏蔽所有键盘输入，让您清洁按键时不会触发任何操作"
@@ -1111,6 +1188,7 @@ struct L10n {
     static var toggleCleaningMode: String {
         switch lang {
         case .english: return "Toggle Cleaning Mode"
+        case .arabic: return "تشغيل/إيقاف وضع التنظيف"
         case .spanish: return "Alternar modo de limpieza"
         case .french: return "Activer le mode nettoyage"
         case .chinese: return "切换清洁模式"
@@ -1125,6 +1203,7 @@ struct L10n {
     static var toggleCleaningModeSubtitle: String {
         switch lang {
         case .english: return "Keyboard shortcut to enable or disable keyboard cleaning mode"
+        case .arabic: return "اختصار لوحة المفاتيح لتفعيل وضع التنظيف أو إيقافه"
         case .spanish: return "Atajo de teclado para activar o desactivar el modo de limpieza"
         case .french: return "Raccourci clavier pour activer ou désactiver le mode nettoyage"
         case .chinese: return "用于启用或禁用键盘清洁模式的快捷键"
@@ -1139,6 +1218,7 @@ struct L10n {
     static var grantAccess: String {
         switch lang {
         case .english: return "Grant Access"
+        case .arabic: return "منح الصلاحية"
         case .spanish: return "Conceder acceso"
         case .french: return "Accorder l'accès"
         case .chinese: return "授予访问权限"
@@ -1153,6 +1233,7 @@ struct L10n {
     static var missingPermissions: String {
         switch lang {
         case .english: return "⚠️ Missing Permissions"
+        case .arabic: return "⚠️ صلاحيات ناقصة"
         case .spanish: return "⚠️ Sin permisos"
         case .french: return "⚠️ Permissions manquantes"
         case .chinese: return "⚠️ 缺少权限"
@@ -1167,6 +1248,7 @@ struct L10n {
     static var openDocs: String {
         switch lang {
         case .english: return "Open docs"
+        case .arabic: return "فتح التوثيق"
         case .spanish: return "Abrir docs"
         case .french: return "Ouvrir les docs"
         case .chinese: return "打开文档"

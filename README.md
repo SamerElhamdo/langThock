@@ -65,6 +65,20 @@ Settings → Languages → Language Switch: ☑ *Play sound when input source ch
 volume. It plays the sound of the profile you switch **to** (Arabic → English plays the English switch sound).
 It is not played when both sources use the same profile (ABC → U.S.) and not at launch.
 
+## In plain words (بالعربي المبسّط)
+
+* **How the Arabic sound is chosen:** macOS tells the app which keyboard is selected (e.g. `com.apple.keylayout.Arabic`).
+  LangThock looks that name up in the mapping table → profile **Arabic** → the soundpack you assigned to Arabic.
+* **How the English sound is chosen:** same thing with `ABC` / `US` → profile **English** → its soundpack.
+* The typed letter is never used. Only the selected keyboard.
+* Unknown keyboard → **Default** profile.
+* **الصوت العربي:** يسأل التطبيق macOS عن لوحة المفاتيح المختارة، فإذا كانت `Arabic` يستخدم ملف «العربية» وحزمة أصواتها.
+* **الصوت الإنجليزي:** إذا كانت `ABC` أو `US` يستخدم ملف «الإنجليزية».
+* الحرف المكتوب لا يؤثر إطلاقاً، فقط لوحة المفاتيح المختارة.
+
+Arabic UI: Settings → General → Language → العربية (right-to-left layout). All files are UTF-8; Arabic file and profile names are
+supported (names are Unicode-normalized so macOS's decomposed forms still match).
+
 ## Adding sounds
 
 Soundpacks live in `~/Library/Application Support/Thock/Soundpacks/<pack-folder>/` (path kept from Thock).

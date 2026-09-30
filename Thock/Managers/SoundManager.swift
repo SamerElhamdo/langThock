@@ -874,7 +874,7 @@ final class SoundManager {
             for file in soundFiles {
                 let fileURL = soundDirectory.appendingPathComponent(file)
                 if let pcmSound = loadPCMSound(from: fileURL) {
-                    soundLibrary[file] = pcmSound
+                    soundLibrary[file.precomposedStringWithCanonicalMapping] = pcmSound
                 }
             }
             

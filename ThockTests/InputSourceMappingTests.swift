@@ -194,3 +194,26 @@ struct KeyMappingTests {
         #expect(pack.upSounds(for: "a").isEmpty)
     }
 }
+
+// MARK: - Arabic file names / encoding
+
+struct ArabicEncodingTests {
+    @Test func decomposedArabicFileNamesMatchComposedOnes() throws {
+        let composed = "أ-key.wav"                                   // U+0623
+        let decomposed = composed.decomposedStringWithCanonicalMapping   // U+0627 U+0654
+        #expect(composed != decomposed || composed.unicodeScalars.count == decomposed.unicodeScalars.count)
+
+        let json = "{\"down\":[\"\(decomposed)\"],\"up\":[]}"
+        let sound = try JSONDecoder().decode(KeySound.self, from: Data(json.utf8))
+        #expect(sound.down == [composed.precomposedStringWithCanonicalMapping])
+        #expect(sound.down[0] == decomposed.precomposedStringWithCanonicalMapping)
+    }
+
+    @Test func configurationKeepsArabicProfileNames() throws {
+        var config = LanguageSoundConfiguration.default
+        config.profiles.append(SoundProfile(id: "custom-1", name: "عربي مخصص", soundpackId: nil, isBuiltIn: false))
+        let data = try JSONEncoder().encode(config)
+        let decoded = try JSONDecoder().decode(LanguageSoundConfiguration.self, from: data)
+        #expect(decoded.profiles.last?.name == "عربي مخصص")
+    }
+}
