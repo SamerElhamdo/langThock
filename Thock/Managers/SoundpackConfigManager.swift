@@ -49,6 +49,11 @@ class SoundpackConfigManager {
         return mouseConfig
     }
     
+    /// Loads a soundpack's config without making it the active one (used by language profiles).
+    func config(for soundpack: Soundpack) -> SoundpackConfig? {
+        return loadConfig(at: soundpack.path, name: soundpack.name)
+    }
+    
     // MARK: - Private
     
     private func loadConfig(at path: String, name: String) -> SoundpackConfig? {

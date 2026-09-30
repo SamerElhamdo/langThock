@@ -37,6 +37,10 @@ final class SoundManager {
     // MARK: - Sound Storage
     private var soundLibrary: [String: PCMSound] = [:]
     private var mouseSoundLibrary: [MouseButtonEvent: [PCMSound]] = [:]
+    /// Extra preloaded sounds keyed "<namespace>/<name>": language-profile soundpacks and switch sounds.
+    /// Kept apart from `soundLibrary` so switching profiles never touches the primary soundpack.
+    private var namespacedLibrary: [String: PCMSound] = [:]
+    private let namespacedLibraryLock = NSLock()
     private var activeSounds: [ActiveSound] = []
     private let activeSoundsLock = NSLock()
     
@@ -767,6 +771,11 @@ final class SoundManager {
             return
         }
         
+        enqueue(pcmSound, pitchVariation: pitchVariation, latencyId: latencyId)
+    }
+    
+    /// Schedules an already-resolved sound for playback. Shared by every `play*` entry point.
+    private func enqueue(_ pcmSound: PCMSound, pitchVariation: Float, latencyId: UUID?) {
         if ENABLE_LATENCY_MEASUREMENT {
             recordLatencyCheckpoint(latencyId, point: .bufferScheduling)
         }
@@ -789,6 +798,65 @@ final class SoundManager {
         activeSoundsLock.lock()
         activeSounds.append(activeSound)
         activeSoundsLock.unlock()
+    }
+    
+    // MARK: - Namespaced sounds (language profiles, switch sounds)
+    
+    /// Preloads `fileNames` from `soundpack` under "<namespace>/<file>". Runs off the hot path.
+    func loadNamespacedSounds(namespace: String, soundpack: Soundpack, fileNames: [String]) {
+        guard let dir = resolveSoundDirectory(for: soundpack) else {
+            Logger.audio.error("Sound directory not found for soundpack: '\(soundpack.name)'")
+            return
+        }
+        var loaded: [String: PCMSound] = [:]
+        for file in Set(fileNames) {
+            if let pcm = loadPCMSound(from: dir.appendingPathComponent(file)) {
+                loaded["\(namespace)/\(file)"] = pcm
+            }
+        }
+        namespacedLibraryLock.lock()
+        namespacedLibrary.merge(loaded) { _, new in new }
+        namespacedLibraryLock.unlock()
+    }
+    
+    /// Loads a single sound file, pre-scaled by `gain` so playback needs no extra work.
+    @discardableResult
+    func loadNamespacedSound(key: String, url: URL, gain: Float = 1.0) -> Bool {
+        guard var pcm = loadPCMSound(from: url) else { return false }
+        if gain != 1.0 {
+            pcm = PCMSound(data: pcm.data.map { $0 * gain }, frameCount: pcm.frameCount)
+        }
+        namespacedLibraryLock.lock()
+        namespacedLibrary[key] = pcm
+        namespacedLibraryLock.unlock()
+        return true
+    }
+    
+    func removeNamespacedSounds(withPrefix prefix: String) {
+        namespacedLibraryLock.lock()
+        namespacedLibrary = namespacedLibrary.filter { !$0.key.hasPrefix(prefix) }
+        namespacedLibraryLock.unlock()
+    }
+    
+    /// Plays a preloaded namespaced sound. Lookup is one lock + one dictionary read; no I/O.
+    func playNamespaced(_ key: String, pitchVariation: Float = 0.0, latencyId: UUID? = nil) {
+        namespacedLibraryLock.lock()
+        let pcm = namespacedLibrary[key]
+        namespacedLibraryLock.unlock()
+        guard let pcm else { return }
+        
+        queueStateLock.lock()
+        let ready = isReady
+        let isRunning = isQueueRunning
+        queueStateLock.unlock()
+        guard ready else { return }
+        
+        if !isRunning {
+            restartQueue()
+        } else {
+            resetIdleTimer()
+        }
+        enqueue(pcm, pitchVariation: pitchVariation, latencyId: latencyId)
     }
     
     func preloadSounds(for soundpack: Soundpack) {

@@ -32,8 +32,10 @@ class KeyboardEventTracker {
             callback: { _, type, event, userInfo in
                 let tracker = Unmanaged<KeyboardEventTracker>.fromOpaque(userInfo!).takeUnretainedValue()
                 
+                // The system disables a tap that is too slow (timeout) or on user input. Re-enable it
+                // instead of stopping, otherwise sounds would silently die until the app restarts.
                 if type.rawValue == 0xFFFFFFFE || type.rawValue == 0xFFFFFFFF {
-                    DispatchQueue.main.async { tracker.stopTracking() }
+                    if let tap = tracker.eventMonitor { CGEvent.tapEnable(tap: tap, enable: true) }
                     return nil
                 }
                 
@@ -98,8 +100,15 @@ class KeyboardEventTracker {
                 }
                 
                 if let action = soundAction {
+                    // The tap runs on the main thread, where TIS may be queried. A real key-down re-reads the
+                    // Input Source *before* choosing the sound, so the first key after a language switch
+                    // already uses the new profile. Other events reuse the current profile.
+                    let profile = type == .keyDown
+                        ? SoundProfileManager.shared.profileForKeyPress()
+                        : SoundProfileManager.shared.currentProfile
+                    let soundpackId = profile.soundpackId
                     DispatchQueue.global(qos: .userInteractive).async {
-                        SoundEngine.shared.play(for: action.keyCode, isKeyDown: action.isKeyDown, latencyId: latencyId)
+                        SoundEngine.shared.play(for: action.keyCode, isKeyDown: action.isKeyDown, soundpackId: soundpackId, latencyId: latencyId)
                     }
                 }
                 
