@@ -22,36 +22,39 @@ struct InputSourceInfo: Equatable {
 ///
 /// The source is identified through TIS (`kTISPropertyInputSourceID`), never by the character a key produced.
 /// TIS must be used from the main thread; the event tap and the notification both run there.
-final class InputSourceMonitor {
+final class InputSourceMonitor: NSObject {
     static let shared = InputSourceMonitor()
 
-    private var observer: NSObjectProtocol?
     private var onChange: ((InputSourceInfo?) -> Void)?
 
-    private init() {}
+    private override init() { super.init() }
 
     /// Starts observing. `onChange` is called on the main thread with the newly selected source.
     func start(onChange: @escaping (InputSourceInfo?) -> Void) {
         stop()
         self.onChange = onChange
-        observer = DistributedNotificationCenter.default().addObserver(
-            forName: Notification.Name(kTISNotifySelectedKeyboardInputSourceChanged as String),
+        DistributedNotificationCenter.default().addObserver(
+            self,
+            selector: #selector(inputSourceChanged),
+            name: Notification.Name(kTISNotifySelectedKeyboardInputSourceChanged as String),
             object: nil,
-            queue: .main,
             suspensionBehavior: .deliverImmediately
-        ) { [weak self] _ in
-            guard let self else { return }
-            self.onChange?(self.queryCurrent())
-        }
+        )
         Logger.engine.info("InputSourceMonitor started")
     }
 
     func stop() {
-        if let observer {
-            DistributedNotificationCenter.default().removeObserver(observer)
-        }
-        observer = nil
+        DistributedNotificationCenter.default().removeObserver(self)
         onChange = nil
+    }
+
+    @objc private func inputSourceChanged(_ notification: Notification) {
+        // Delivered on the main run loop; hop only if that ever changes.
+        if Thread.isMainThread {
+            onChange?(queryCurrent())
+        } else {
+            DispatchQueue.main.async { [weak self] in self?.onChange?(self?.queryCurrent()) }
+        }
     }
 
     // MARK: - Queries
