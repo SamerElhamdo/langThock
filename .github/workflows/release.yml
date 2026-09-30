@@ -1,0 +1,108 @@
+name: Thock Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    name: Build, Release & Bump Homebrew
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.2'
+
+      - name: Build Archive
+        run: |
+          mkdir -p build
+          xcodebuild -scheme Thock -configuration Release \
+            -arch x86_64 -arch arm64 \
+            -archivePath build/Thock.xcarchive archive \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          cp -R build/Thock.xcarchive/Products/Applications/Thock.app build/Thock.app
+
+      - name: Add CLI
+        run: cp cli/thock-cli build/thock-cli
+        
+      - name: Clean quarantine attributes
+        run: |
+          xattr -cr build/Thock.app
+          xattr -cr build/thock-cli
+
+      - name: Ad-hoc sign the app
+        run: codesign --force --deep --sign - build/Thock.app
+
+      - name: Verify quarantine removal and signature
+        run: |
+          echo "Checking for quarantine attributes..."
+
+          if xattr -p com.apple.quarantine build/Thock.app; then
+            echo "Error: Thock.app still has quarantine attribute!" >&2
+          exit 1
+          else
+            echo "✅ Thock.app is clean."
+          fi
+
+          if xattr -p com.apple.quarantine build/thock-cli; then
+            echo "Error: thock-cli still has quarantine attribute!" >&2
+            exit 1
+          else
+            echo "✅ thock-cli is clean."
+          fi
+
+          echo "Checking ad-hoc code signature..."
+
+          if codesign --verify --deep --strict build/Thock.app; then
+            echo "✅ Thock.app signature is valid."
+          else
+            echo "Error: Thock.app signature verification failed!" >&2
+            exit 1
+          fi
+
+      - name: Zip with version
+        run: |
+          cd build
+          ZIP_NAME="Thock-${{ github.ref_name }}.zip"
+          zip -r "$ZIP_NAME" Thock.app thock-cli
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+          echo "VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
+
+      - name: Get SHA256
+        id: sha
+        run: |
+          HASH=$(shasum -a 256 "build/$ZIP_NAME" | awk '{ print $1 }')
+          echo "sha=$HASH" >> $GITHUB_OUTPUT
+
+      - name: Upload release artifact
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/${{ env.ZIP_NAME }}
+          body_path: docs/releases/${{ github.ref_name }}.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Homebrew Cask
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TOKEN }}
+        run: |
+          git config --global user.email "release-bot@thock.dev"
+          git config --global user.name "Thock Release Bot"
+
+          git clone https://${GH_TOKEN}@github.com/kamillobinski/homebrew-thock.git
+          cd homebrew-thock
+          git checkout -b bump-${{ env.VERSION }}
+
+          sed -i '' "s|version \".*\"|version \"${{ env.VERSION }}\"|" Casks/thock.rb
+          sed -i '' "s|sha256 \".*\"|sha256 \"${{ steps.sha.outputs.sha }}\"|" Casks/thock.rb
+
+          git add Casks/thock.rb
+          git commit -m "chore: bump cask to ${{ env.VERSION }}"
+          git push origin bump-${{ env.VERSION }}
+          gh pr create --title "chore: bump cask to ${{ env.VERSION }}" --body "Automated Thock cask version bump." --head bump-${{ env.VERSION }}
