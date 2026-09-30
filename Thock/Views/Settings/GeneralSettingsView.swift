@@ -75,17 +75,17 @@ struct GeneralSettingsView: View {
                 SettingsSectionView(title: L10n.more) {
                     SettingsLinkRowView(
                         title: L10n.aboutThisVersion,
-                        url: "https://github.com/kamillobinski/thock/releases/tag/\(AppInfoHelper.appVersion)"
+                        url: "https://github.com/SamerElhamdo/langThock"
                     )
                     
                     SettingsLinkRowView(
                         title: L10n.contribute,
-                        url: "https://github.com/kamillobinski/thock"
+                        url: "https://github.com/SamerElhamdo/langThock"
                     )
                     
                     SettingsLinkRowView(
                         title: L10n.reportBug,
-                        url: "https://github.com/kamillobinski/thock/issues",
+                        url: "https://github.com/SamerElhamdo/langThock/issues",
                         showDivider: false
                     )
                 }

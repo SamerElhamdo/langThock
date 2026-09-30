@@ -31,7 +31,7 @@
 		7709B6642D98A08C00E5E6E9 /* thock-cli */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "thock-cli"; sourceTree = "<group>"; };
 		7716DC492D9FEC9B00E50DDB /* release.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = release.yml; sourceTree = "<group>"; };
 		772D9F2D2D817942003DA1A4 /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Resources; path = Thock/Resources; sourceTree = "<group>"; };
-		7762F4902D7A83BA0033AE42 /* Thock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Thock.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7762F4902D7A83BA0033AE42 /* LangThock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LangThock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7762F4A12D7A83BC0033AE42 /* ThockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7762F4AB2D7A83BC0033AE42 /* ThockUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ThockUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -144,7 +144,7 @@
 		7762F4912D7A83BA0033AE42 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7762F4902D7A83BA0033AE42 /* Thock.app */,
+				7762F4902D7A83BA0033AE42 /* LangThock.app */,
 				7762F4A12D7A83BC0033AE42 /* ThockTests.xctest */,
 				7762F4AB2D7A83BC0033AE42 /* ThockUITests.xctest */,
 			);
@@ -174,7 +174,7 @@
 				6D5C1EC92E36A6A500ABE204 /* KeyboardShortcuts */,
 			);
 			productName = Tapp;
-			productReference = 7762F4902D7A83BA0033AE42 /* Thock.app */;
+			productReference = 7762F4902D7A83BA0033AE42 /* LangThock.app */;
 			productType = "com.apple.product-type.application";
 		};
 		7762F4A02D7A83BC0033AE42 /* ThockTests */ = {
@@ -476,10 +476,11 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 1.23.0;
+				MARKETING_VERSION = 0.1.0;
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.kamillobinski.Thock;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = dev.langthock.LangThock;
+				PRODUCT_MODULE_NAME = Thock;
+				PRODUCT_NAME = LangThock;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -510,9 +511,10 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 1.23.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.kamillobinski.Thock;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.langthock.LangThock;
+				PRODUCT_MODULE_NAME = Thock;
+				PRODUCT_NAME = LangThock;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -533,7 +535,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thock.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Thock";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LangThock.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LangThock";
 			};
 			name = Debug;
 		};
@@ -552,7 +554,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Thock.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Thock";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LangThock.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/LangThock";
 			};
 			name = Release;
 		};

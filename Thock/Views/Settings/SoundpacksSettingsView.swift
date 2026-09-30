@@ -51,7 +51,7 @@ struct SoundpacksSettingsView: View {
                     )
                     SettingsLinkRowView(
                         title: L10n.soundpackCreationGuide,
-                        url: "https://thockapp.com/docs/\(AppInfoHelper.appVersion)/features/custom-soundpacks",
+                        url: "https://github.com/SamerElhamdo/langThock#adding-sounds",
                         showDivider: false
                     )
                 }

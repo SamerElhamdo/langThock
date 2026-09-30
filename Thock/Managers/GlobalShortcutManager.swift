@@ -35,7 +35,7 @@ class GlobalShortcutManager {
             guard granted else { return }
             
             let content = UNMutableNotificationContent()
-            content.title = "Thock"
+            content.title = "LangThock"
             content.body = enabled ? "Enabled" : "Disabled"
             content.sound = nil
             content.interruptionLevel = .passive

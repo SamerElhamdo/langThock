@@ -22,7 +22,7 @@ class LatencyTracker {
     
     private(set) var measuredHardwareLatencyMs: Double = 0.0
     private var measurements: [UUID: LatencyMeasurement] = [:]
-    private let queue = DispatchQueue(label: "dev.kamillobinski.Thock.latency", qos: .userInteractive)
+    private let queue = DispatchQueue(label: "dev.langthock.latency", qos: .userInteractive)
     
     private struct LatencyMeasurement {
         let id: UUID
