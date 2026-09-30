@@ -1,272 +1,144 @@
-<a name="readme-top"></a>
+# LangThock
 
+LangThock is a fork of [Thock](https://github.com/kamillobinski/thock) (MIT) — a native macOS utility that plays
+mechanical-keyboard sounds — with one new core feature:
 
+> **The keyboard sound changes automatically with the current macOS Input Source, so you can tell the keyboard
+> language by ear.** Type in Arabic → Arabic sounds. Type in English → English sounds.
 
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <img src="docs/readme/icon.png" alt="Logo" width="80" height="80">
-  <h3 align="center">Thock</h3>
-  <p align="center">
-    A native macOS utility that adds sound effects to your keyboard.
-    <br />Blazing fast, lightweight and runs in the menu bar.
-    <br /><br />
-    <a href="https://github.com/kamillobinski/thock/releases/latest" target="_blank" rel="noopener noreferrer">
-      <img src="https://img.shields.io/github/v/release/kamillobinski/thock?style=rounded&color=white&labelColor=000000&label=release" alt="Release Version" />
-    </a>
-    <a href="#" target="_blank" rel="noopener noreferrer">
-      <img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/kamillobinski/thock/total?style=rounded&color=white&labelColor=000000">
-    </a>
-    <a href="https://discord.gg/sGVaUxgfJx" target="_blank" rel="noopener noreferrer">
-      <img alt="Discord" src="https://img.shields.io/discord/1453196153771397286?style=rounded&color=white&labelColor=000000&label=discord">
-    </a>
-    <a href="https://deepwiki.com/kamillobinski/thock" target="_blank" rel="noopener noreferrer">
-      <img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"/>
-    </a>
-  </p>
-</div>
+Everything else is Thock: the low-latency `AudioQueue` engine, preloaded PCM buffers, soundpacks, per-key sounds,
+pitch variation, menu-bar UI. LangThock extends it; it does not replace it. See `LICENSE` (Thock's MIT license is kept).
 
+## The problem it solves
 
+You type Arabic, press the language shortcut, and keep typing immediately. macOS sometimes takes a moment to
+switch, and you only notice from the wrong characters. With LangThock each language *sounds* different, and the
+sound follows the Input Source **before** the very next key press is voiced.
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#about-the-project">About The Project</a></li>
-    <li>
-      <a href="#features">Features</a>
-      <ul>
-        <li><a href="#custom-engine">Custom Engine</a></li>
-        <li><a href="#sound-library">Sound Library</a></li>
-        <li><a href="#smart-integration">Smart Integration</a></li>
-        <li><a href="#advanced-control">Advanced Control</a></li>
-        <li><a href="#translation">Translation</a></li>
-      </ul>
-    </li>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+## How it works
 
-
-
-<!-- ABOUT THE PROJECT -->
-## About The Project
-
-![banner](docs/readme/banner.png)
-
-Thock is a high-performance utility designed to bring the tactile satisfaction of mechanical switches to your macOS workspace. Built natively in Swift, it bridges the gap between hardware feel and software execution with zero compromises on speed or privacy.
-
-Started this project to challenge the status quo. While paid alternatives exist, Thock is built on the belief that the best tools should be open-source and community-driven. By focusing on a custom low-latency engine and deep system integration, Thock offers a professional-grade typing experience that stays out of your way and keeps your flow state intact.
-
-> 🍺 Homebrew: <code>brew install --cask kamillobinski/thock/thock</code><br/>
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- FEATURES -->
-## Features
-
-<details>
-<summary>Quick Overview (if you don't feel like scrolling today)</summary>
-<br/>
-<table>
-  <thead>
-    <tr>
-      <th width="300px">Feature</th>
-      <th width="700px">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><b>Custom Engine</b></td>
-      <td>Native AudioQueue APIs achieving ultra-low latency for perfectly synced feedback.</td>
-    </tr>
-    <tr>
-      <td><b>Sound Library</b></td>
-      <td>Extensible JSON-based architecture to import or create custom switch profiles.</td>
-    </tr>
-    <tr>
-      <td><b>Smart Integration</b></td>
-      <td>Music awareness that automatically mutes audio during playback.</td>
-    </tr>
-    <tr>
-      <td><b>Advanced Control</b></td>
-      <td>Hands-on-keys management via Raycast extension and dedicated CLI.</td>
-    </tr>
-    <tr>
-      <td><b>Translation</b></td>
-      <td>Fully localized interface for English, Español, Français, 日本語, 中文, Deutsch, Italiano and Vietnamese users.</td>
-    </tr>
-  </tbody>
-</table>
-</details>
-
-
-
-![custom-engine](docs/readme/custom-engine.png)
-
-### Custom Engine
-
-Features a custom audio engine built on native macOS AudioQueue APIs, achieving ultra-low latency that feels instantaneous. By bypassing standard high-level processing layers, we have eliminated perceptual lag to provide perfectly synced auditory feedback.
-
-Whether you are a high-speed programmer or a creative writer, Thock ensures every keystroke is met with organic, realtime sound that keeps pace with your fastest workflow.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-![sound-library](docs/readme/sound-library.png)
-
-### Sound Library
-
-Built to be an open platform. While the app comes pre-loaded with high-quality recordings, you aren't limited to the defaults.
-
-With support for custom sound packs, you can easily import new switch profiles or create your own using a simple JSON structure. Whether you want the heavy 'thock' of a vintage board or a completely unique experimental soundscape, you can expand your library to suit your specific taste. Drop your folder into the directory and switch profiles instantly.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-![smart-integration](docs/readme/smart-integration.png)
-
-### Smart Integration
-
-With music awareness, Thock intelligently manages your soundscape so you never have to manually toggle settings. By detecting active playback from apps like Spotify or Apple Music, it automatically mutes its typing sounds to let your music take priority.
-
-As soon as the music stops, the app instantly resumes your mechanical feedback. It's a seamless, 'set-and-forget' feature designed for deep work sessions where your focus shifts between rhythm of your keys and the rhythm of your playlist.
-
-> **Supported**: Apple Music, Spotify, VLC
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-![advanced-control](docs/readme/advanced-control.png)
-
-### Advanced Control
-
-Built for power users, Thock extends beyond the menu bar with its own Raycast Extension and a dedicated CLI. This integration allows you to toggle the audio engine and switch sound packs entirely via the command bar.
-
-By exposing every core function to the system, Thock fits seamlessly into your automation workflows and productivity scripts. Whether you're using Raycast, Alfred, or the terminal, you have total control over your typing environment without ever lifting your hands.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-![translation](docs/readme/translation.png)
-
-### Translation
-
-With localization, Thock bridges the gap between powerful functionality and effortless usability. The interface is fully translated into multiple languages, allowing users to navigate the ecosystem without language barriers.
-
-Select your preferred language in the general settings to enjoy a workspace tailored to your needs.
-
-> **Supported**: 🇺🇸 English, 🇪🇸 Spanish, 🇫🇷 French, 🇨🇳 Chinese, 🇯🇵 Japanese, 🇩🇪 German, 🇮🇹 Italian, 🇻🇳 Vietnamese, 🇧🇷 Portuguese.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-It's quick and easy. You can either download a prebuilt release or build it yourself if you prefer.
-
-> [!WARNING]  
-> Thock requires macOS 13.5 Ventura or later.
-
-### `A` Homebrew Cask Installation (recommended)
-
-```sh
-brew tap kamillobinski/thock
-brew install --cask thock
+```text
+macOS Input Source
+        │
+        ▼
+InputSourceMonitor          (TIS: TISCopyCurrentKeyboardInputSource +
+        │                    kTISNotifySelectedKeyboardInputSourceChanged — no polling)
+        ▼
+SoundProfileResolver        (Input Source ID → Sound Profile, editable mapping)
+        │
+        ▼
+Current Sound Profile       (SoundProfileManager, in-memory)
+        │
+        ▼
+CGEvent Keyboard Monitor    (KeyboardEventTracker, unchanged tap)
+        │
+        ▼
+Low-Latency Audio Engine    (SoundManager / AudioQueue, preloaded buffers)
+        │
+        ▼
+Keyboard Sound
 ```
 
-or one command:
-```sh
-brew install --cask kamillobinski/thock/thock
+### Input Source detection
+* The **Input Source**, not the typed character, decides the language: `com.apple.keylayout.Arabic`,
+  `com.apple.keylayout.ABC`, `com.apple.keylayout.US`, …
+* Detection is event-driven: macOS posts `kTISNotifySelectedKeyboardInputSourceChanged` and LangThock re-reads the source with TIS.
+* **No delay / race handling:** on the first press of every key, the event tap (main thread, where TIS is allowed)
+  re-reads the current Input Source *before* choosing the sound. If you switch and type instantly and the system
+  notification has not arrived yet, that key press still gets the correct profile. No sleep, no debounce. The
+  check is skipped entirely when no profile has its own soundpack and switch sounds are off.
+
+### Mapping
+Resolution order: exact Input Source ID → primary language of the source (`ar`, `en`, …) → *Default* profile.
+Defaults: `Arabic`, `Arabic-QWERTY`, `ArabicPC` → **Arabic**; `ABC`, `US`, `USExtended` → **English**; anything else → **Default**.
+Change it in **Settings → Languages → Input Sources** (lists the sources enabled on your Mac).
+The mapping lives in `UserDefaults` (`languageSoundConfiguration`, JSON) — never hard-coded in the key path.
+
+### Sound Profiles
+A profile = a name + one installed **keyboard soundpack** (or "current keyboard soundpack"). This reuses Thock's
+soundpack format, so per-key sounds, several random variations per key, and key-up sounds all work.
+Built-in profiles: **Default**, **Arabic**, **English**; you can create **Custom** ones. Each profile has
+▶ Preview buttons (Key / Space / Enter / Backspace) that use the same audio engine.
+
+### Language switch sound
+Settings → Languages → Language Switch: ☑ *Play sound when input source changes*, plus a sound file and a shared
+volume. It plays the sound of the profile you switch **to** (Arabic → English plays the English switch sound).
+It is not played when both sources use the same profile (ABC → U.S.) and not at launch.
+
+## Adding sounds
+
+Soundpacks live in `~/Library/Application Support/Thock/Soundpacks/<pack-folder>/` (path kept from Thock).
+Each folder has `config.json` and the audio files (`.wav`/`.mp3`):
+
+```json
+{
+  "id": "PUT-A-UNIQUE-UUID-HERE",
+  "metadata": { "name": "My Arabic", "brand": "Me", "author": "Me", "category": "keyboard", "supportsKeyUp": false },
+  "license": { "type": "CC0", "url": "https://creativecommons.org/publicdomain/zero/1.0/" },
+  "sounds": {
+    "default": { "down": ["arabic-key-01.wav", "arabic-key-02.wav", "arabic-key-03.wav"], "up": [] },
+    "space":   { "down": ["arabic-space.wav"],     "up": [] },
+    "enter":   { "down": ["arabic-enter.wav"],     "up": [] },
+    "del":     { "down": ["arabic-backspace.wav"], "up": [] }
+  }
+}
 ```
 
-<details>
-<summary><b>B</b>: Release Download</summary>
+* One random file from the list is chosen per press. Keys without an entry fall back to `default`.
+* Key names: letters/digits/symbols themselves, `space`, `enter`, `del`, `tab`, `esc`, `capsLock`, `command`,
+  `shiftLeft`/`shiftRight`, `optionLeft`/`optionRight`, `ctrlLeft`, `fn`, `arrLeft`/`arrRight`/`arrUp`/`arrDown`,
+  `home`, `end`, `pgUp`, `pgDn`, `f1`…`f12` (see `Thock/Helpers/KeyMapper.swift`).
+* **Arabic sounds:** make/copy a pack as above (e.g. folder `my-arabic`), then Settings → Languages → Sound Profiles → *Arabic* → pick it.
+* **English sounds:** same, pick it for the *English* profile.
+* **Try it right now:** `python3 scripts/make_sample_language_packs.py` generates two synthetic packs
+  (`Sample Arabic` deep thock, `Sample English` bright click) and switch sounds (`arabic-switch.wav`, `english-switch.wav`
+  inside the pack folders). Then assign them to the Arabic/English profiles. Existing Mechvibes packs convert with `scripts/mechvibes2thock.py`.
+* **Change mapping:** Settings → Languages → Input Sources → choose the profile per source.
 
-1. Go to the [latest release](https://github.com/kamillobinski/thock/releases/latest)
-2. Download `Thock-x.y.z.zip`
-3. Unpack the ZIP file
-4. Move the app to your Applications folder for easy access
-5. Open Thock
+## Permissions
 
-</details>
+* **Accessibility** — required. The keyboard monitor is a CGEvent tap that must be able to swallow keys (Cleaning Mode).
+  On first launch LangThock shows an explanation and a button that opens *System Settings → Privacy & Security → Accessibility*.
+* Nothing else: reading the Input Source needs no permission; no Input Monitoring, no notifications, no network.
 
-<details>
-<summary><b>C</b>: Build From Source</summary>
+## Privacy
 
-1. Clone the repository
-   ```sh
-   git clone https://github.com/kamillobinski/thock.git
-   cd thock
-   ```
+Strictly local. Key events are used only to choose a sound: no text is stored, logged or transmitted; no key
+logging, analytics, telemetry or cloud. There are **no network requests**: the upstream update check and online
+soundpack downloads were removed. Install packs by copying folders.
 
-2. Open in Xcode
-   ```sh
-   open Thock.xcodeproj
-   ```
+## Performance
 
-3. Build and run the application
+The key path is: key event → current profile (lock + copy) → preloaded PCM buffer → play. No disk I/O, JSON parsing,
+logging or allocation beyond Thock's existing path while typing. Profile soundpacks and switch sounds are decoded at launch and
+whenever profiles change, on a background queue. `AudioQueue`, buffer sizes and idle handling are untouched.
+Tip: set `ENABLE_LATENCY_MEASUREMENT` in `LatencyMeasurement.swift` to measure end-to-end latency.
 
-</details>
-   
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## Build & run
 
+Requires macOS 13.5+ and Xcode 16+ (Swift 5, SwiftPM dependency: KeyboardShortcuts).
 
+```sh
+open Thock.xcodeproj                      # scheme "Thock", product LangThock.app
+xcodebuild -project Thock.xcodeproj -scheme Thock -configuration Release build
+xcodebuild -project Thock.xcodeproj -scheme Thock test        # unit tests (ThockTests)
+```
 
-<!-- LICENSE -->
-## License
+The project still carries upstream's development team; select your own signing team in Xcode
+(Signing & Capabilities). Run `LangThock.app`, grant Accessibility, open the menu-bar icon → Settings → Languages.
 
-Distributed under the MIT License. See `LICENSE` for more information.
+### Launch at login
+Settings → General → *Launch at Login* (or menu → Quick Settings). Manually: System Settings → General → Login Items → `+` → LangThock.app.
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+## Menu bar
 
+```text
+LangThock  (toggle)          ← Keyboard Sounds on/off
+Current Input Source:  ● Arabic
+Current Sound Profile: ● Arabic
+✓ Language Switch Sounds
+Volume ──●──   Pitch …   Soundpacks …   Quick Settings   Settings…   Quit
+```
 
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Got an idea or want to improve something? Awesome!
-
-Check out the [contributing guide](./docs/CONTRIBUTING.md) for everything you need to know.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-Thanks to the folks that helped make this project a reality!
-
-| Contributor | Contribution |
-| - | - |
-| [sasagar](https://github.com/sasagar) | VLC auto-launch prevention. |
-| [nthnbch](https://github.com/nthnbch) | French translations. |
-| [Bcharlit](https://github.com/Bcharlit) | German translations. |
-| [Crocchetto](https://github.com/crocchetto) | Italian translations. |
-| [Kaedeeeeeeeeee](https://github.com/Kaedeeeeeeeeee) | Dynamic localization (Japanese + Chinese), auto-enable on headphones, trackpad sound support. |
-| [distantorigin](https://github.com/distantorigin) | Menu bar accessibility and VoiceOver responsiveness. |
-| [SouhailBlmn](https://github.com/SouhailBlmn) | Volume persistence across output devices, global shortcut to toggle the app. |
-| [shailantani](https://github.com/shailantani) | Raycast extension ([source code](https://github.com/raycast/extensions/tree/main/extensions/thock)). |
-| [qalonbudker](https://github.com/qalonbudker) | Pitch variation for key sounds. |
-| [zenangst](https://github.com/zenangst) | Event handling, mode saving, performance improvements. |
-| [iamsoum](https://github.com/iamsoum) | Clearer step-by-step sound pack conversion instructions. |
-| [cattybeo](https://github.com/cattybeo) | Vietnamese translations. |
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-[Swift-url]: https://img.shields.io/badge/swift-%23FA7343.svg?style=for-the-badge&logo=swift&logoColor=white
+## Credits & license
+Based on Thock by Kamil Łobiński — MIT License (see `LICENSE`).
