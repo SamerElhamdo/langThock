@@ -198,15 +198,15 @@ struct KeyMappingTests {
 // MARK: - Arabic file names / encoding
 
 struct ArabicEncodingTests {
-    @Test func decomposedArabicFileNamesMatchComposedOnes() throws {
-        let composed = "أ-key.wav"                                   // U+0623
-        let decomposed = composed.decomposedStringWithCanonicalMapping   // U+0627 U+0654
-        #expect(composed != decomposed || composed.unicodeScalars.count == decomposed.unicodeScalars.count)
+    @Test func decomposedArabicFileNamesAreNormalizedToComposedForm() throws {
+        let composed = "\u{0623}-key.wav"                              // "أ" as one scalar
+        let decomposed = composed.decomposedStringWithCanonicalMapping   // "ا" + hamza above
+        // Swift's == is canonical-equivalence based, so compare the raw scalars.
+        #expect(Array(composed.unicodeScalars) != Array(decomposed.unicodeScalars))
 
         let json = "{\"down\":[\"\(decomposed)\"],\"up\":[]}"
         let sound = try JSONDecoder().decode(KeySound.self, from: Data(json.utf8))
-        #expect(sound.down == [composed.precomposedStringWithCanonicalMapping])
-        #expect(sound.down[0] == decomposed.precomposedStringWithCanonicalMapping)
+        #expect(Array(sound.down[0].unicodeScalars) == Array(composed.unicodeScalars))
     }
 
     @Test func configurationKeepsArabicProfileNames() throws {
