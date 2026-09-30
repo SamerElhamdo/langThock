@@ -1,6 +1,5 @@
 import Cocoa
 import AppKit
-import UserNotifications
 import OSLog
 
 class AppDelegate: NSObject, NSApplicationDelegate, MenuBarControllerDelegate {
@@ -19,6 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, MenuBarControllerDelegate {
             continueAppInitialization()
         } else {
             menuBarController.setNeedsAuthorization(true)
+            PermissionOnboarding.show()
             waitForPermissionsRestored()
         }
     }
@@ -27,6 +27,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, MenuBarControllerDelegate {
         permissionMonitor?.cancel()
         keyboardEventTracker?.stopTracking()
         mouseEventTracker?.stopTracking()
+        InputSourceMonitor.shared.stop()
         PipeListenerService.shared.cleanUp()
     }
     
@@ -99,6 +100,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, MenuBarControllerDelegate {
             }
             DispatchQueue.main.async {
                 self.menuBarController.setNeedsAuthorization(false)
+                PermissionOnboarding.dismiss()
                 self.continueAppInitialization()
             }
         }
@@ -107,12 +109,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, MenuBarControllerDelegate {
     // MARK: - Initialization
     
     private func continueAppInitialization() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, error in
-            if let error = error {
-                print("Error requesting notification permissions: \(error)")
-            }
-        }
-        
         _ = PipeListenerService.shared
         initializeKeyboardEventTracker()
         initializeMouseEventTracker()
@@ -121,6 +117,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, MenuBarControllerDelegate {
         
         migrateCustomSoundsDirectoryIfNeeded()
         SoundpackEngine.shared.loadInitialSoundpacks()
+        setupLanguageSounds()
         
         AudioDeviceManager.shared.startMonitoring()
         HeadphoneDetector.shared.startMonitoring()
@@ -138,6 +135,27 @@ class AppDelegate: NSObject, NSApplicationDelegate, MenuBarControllerDelegate {
                 print("Error checking for updates: \(error.localizedDescription)")
             }
         }
+    }
+    
+    // MARK: - Language-aware sounds
+    
+    private func setupLanguageSounds() {
+        let manager = SoundProfileManager.shared
+        let store = LanguageSoundStore.shared
+        
+        manager.onTransition = { [weak manager] transition in
+            guard let manager, let profile = manager.switchSoundProfile(for: transition) else { return }
+            SoundEngine.shared.playSwitchSound(for: profile)
+        }
+        
+        // Preload profile soundpacks + switch sounds (background), and again whenever they may change.
+        let reload = { ProfileSoundBank.shared.reload(configuration: store.configuration) }
+        reload()
+        NotificationCenter.default.addObserver(forName: .languageSoundConfigurationDidChange, object: store, queue: .main) { _ in reload() }
+        NotificationCenter.default.addObserver(forName: .soundpackLibraryDidChange, object: nil, queue: .main) { _ in reload() }
+        
+        manager.syncNow()
+        InputSourceMonitor.shared.start { manager.apply(inputSource: $0) }
     }
     
     // MARK: - Migration

@@ -7,6 +7,8 @@ class MenuBarController {
     private weak var delegate: MenuBarControllerDelegate?
     private var hasUpdate: Bool = false
     private var needsAuthorization: Bool = false
+    private var inputSourceItem: NSMenuItem?
+    private var soundProfileItem: NSMenuItem?
     
     private enum MenuItemTitle {
         static var app: String { AppInfoHelper.appName }
@@ -55,6 +57,13 @@ class MenuBarController {
             self,
             selector: #selector(handleSettingsUpdate),
             name: .soundpackLibraryDidChange,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleActiveProfileChange),
+            name: .activeSoundProfileDidChange,
             object: nil
         )
         
@@ -117,6 +126,7 @@ class MenuBarController {
         updateMenuBarIcon(for: AppEngine.shared.isEnabled())
         
         addToggleMenuItem()
+        addLanguageSection()
         if needsAuthorization { addAuthorizeMenuItem() }
         addVolumeSliderItem()
         addPitchButtonRowItem()
@@ -129,14 +139,51 @@ class MenuBarController {
         addQuitMenuItem()
     }
     
+    // MARK: - Language section
+    
+    /// "Current Input Source / Current Sound Profile / Language Switch Sounds". The two status rows are
+    /// updated in place when the Input Source changes (no menu rebuild).
+    private func addLanguageSection() {
+        let state = SoundProfileManager.shared.currentState
+        
+        menu.addItem(createMenuLabel(LangL10n.currentInputSource))
+        let sourceItem = NSMenuItem(title: LangL10n.status(state.source?.name), action: #selector(openSettings), keyEquivalent: "")
+        sourceItem.target = self
+        menu.addItem(sourceItem)
+        inputSourceItem = sourceItem
+        
+        menu.addItem(createMenuLabel(LangL10n.currentSoundProfile))
+        let profileItem = NSMenuItem(title: LangL10n.status(state.profile.name), action: #selector(openSettings), keyEquivalent: "")
+        profileItem.target = self
+        menu.addItem(profileItem)
+        soundProfileItem = profileItem
+        
+        let switchItem = NSMenuItem(title: LangL10n.languageSwitchSounds, action: #selector(toggleLanguageSwitchSounds(_:)), keyEquivalent: "")
+        switchItem.state = LanguageSoundStore.shared.configuration.switchSoundEnabled ? .on : .off
+        switchItem.target = self
+        menu.addItem(switchItem)
+        menu.addItem(NSMenuItem.separator())
+    }
+    
+    @objc private func handleActiveProfileChange() {
+        DispatchQueue.main.async {
+            let state = SoundProfileManager.shared.currentState
+            self.inputSourceItem?.title = LangL10n.status(state.source?.name)
+            self.soundProfileItem?.title = LangL10n.status(state.profile.name)
+        }
+    }
+    
+    @objc private func toggleLanguageSwitchSounds(_ sender: NSMenuItem) {
+        let enabled = sender.state != .on
+        LanguageSoundStore.shared.update { $0.switchSoundEnabled = enabled }
+        sender.state = enabled ? .on : .off
+    }
+    
     private func addAuthorizeMenuItem() {
         menu.addItem(createMenuLabel(L10n.missingPermissions))
         let item = NSMenuItem(title: L10n.grantAccess, action: #selector(openAccessibilitySettings), keyEquivalent: "")
         item.target = self
         menu.addItem(item)
-        let docsItem = NSMenuItem(title: L10n.openDocs, action: #selector(openPermissionsDocs), keyEquivalent: "")
-        docsItem.target = self
-        menu.addItem(docsItem)
         menu.addItem(NSMenuItem.separator())
     }
     
@@ -229,38 +276,6 @@ class MenuBarController {
             let returnUp = CGEvent(keyboardEventSource: source, virtualKey: 0x24, keyDown: false)
             returnDown?.post(tap: .cgAnnotatedSessionEventTap)
             returnUp?.post(tap: .cgAnnotatedSessionEventTap)
-        }
-    }
-    
-    @objc private func checkForUpdates() {
-        AppUpdater.shared.checkForUpdates { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let isUpdateAvailable):
-                    self?.setUpdateAvailable(isUpdateAvailable)
-                    
-                    let alert = NSAlert()
-                    if isUpdateAvailable {
-                        alert.messageText = L10n.updateAvailableTitle
-                        alert.informativeText = L10n.updateAvailableMessage
-                        alert.alertStyle = .informational
-                    } else {
-                        alert.messageText = L10n.noUpdatesTitle
-                        alert.informativeText = L10n.noUpdatesMessage
-                        alert.alertStyle = .informational
-                    }
-                    alert.addButton(withTitle: L10n.ok)
-                    alert.runModal()
-                    
-                case .failure(let error):
-                    let alert = NSAlert()
-                    alert.messageText = L10n.updateCheckFailed
-                    alert.informativeText = "Unable to check for updates: \(error.localizedDescription)"
-                    alert.alertStyle = .warning
-                    alert.addButton(withTitle: L10n.ok)
-                    alert.runModal()
-                }
-            }
         }
     }
     
@@ -456,26 +471,6 @@ class MenuBarController {
         ).disabled()
         subMenu.addItem(versionItem)
         
-        // What's new link
-        let releaseNotesItem = NSMenuItem(
-            title: MenuItemTitle.releaseNotes,
-            action: #selector(openChangelog),
-            keyEquivalent: ""
-        )
-        releaseNotesItem.target = self
-        subMenu.addItem(releaseNotesItem)
-        
-        subMenu.addItem(NSMenuItem.separator())
-        
-        // Check for updates
-        let checkUpdatesItem = NSMenuItem(
-            title: MenuItemTitle.checkForUpdates,
-            action: #selector(checkForUpdates),
-            keyEquivalent: ""
-        )
-        checkUpdatesItem.target = self
-        subMenu.addItem(checkUpdatesItem)
-        
         return subMenu
     }
     
@@ -555,18 +550,6 @@ class MenuBarController {
     
     @objc private func openAccessibilitySettings() {
         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.settings.PrivacySecurity.extension?Privacy_Accessibility")!)
-    }
-    
-    @objc private func openPermissionsDocs() {
-        if let url = URL(string: "https://thockapp.com/docs/\(AppInfoHelper.appVersion)/getting-started/permissions") {
-            NSWorkspace.shared.open(url)
-        }
-    }
-    
-    @objc private func openChangelog() {
-        if let url = URL(string: "https://github.com/kamillobinski/thock/releases/tag/\(AppInfoHelper.appVersion)") {
-            NSWorkspace.shared.open(url)
-        }
     }
     
     @objc private func changeSoundpack(_ sender: NSMenuItem) {
